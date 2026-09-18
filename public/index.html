@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCHLERN LISENSI STUDIO</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>MCHLERN LISENSI STUDIO</h1>
+    </header>
+    <nav>
+        <a href="index.html" class="active">TAMBAH LISENSI</a>
+        <a href="list.html">LIST AKUN TER ACC</a>
+    </nav>
+
+    <div class="container">
+        <h2>INPUT PLACE ID</h2>
+        <div class="input-group">
+            <input type="number" id="placeIdInput" placeholder="Place ID Roblox..." required>
+            <button onclick="accPlace()">ACC</button>
+        </div>
+        <p id="message" class="status-msg"></p>
+    </div>
+
+    <script>
+        async function accPlace() {
+            const input = document.getElementById('placeIdInput');
+            const message = document.getElementById('message');
+            const placeId = input.value;
+
+            if (!placeId) {
+                message.innerText = "> ERROR: PLACE ID KOSONG.";
+                message.style.color = "red";
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/places', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ placeId: placeId })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    message.innerText = `> SUCCESS: PLACE ID [${placeId}] DI-ACC.`;
+                    message.style.color = "green";
+                    input.value = '';
+                } else {
+                    message.innerText = `> FAILED: ${data.error}`;
+                    message.style.color = "red";
+                }
+            } catch (err) {
+                message.innerText = "> ERROR: SERVER DISCONNECTED.";
+                message.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
