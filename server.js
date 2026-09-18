@@ -5,7 +5,8 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DB_FILE = path.join(__dirname, 'data.json');
+// Gunakan path dari environment variable jika ada (untuk Railway Volume), jika tidak pakai default
+const DB_FILE = process.env.DATA_PATH || path.join(__dirname, 'data.json');
 
 app.use(cors());
 app.use(express.json());
