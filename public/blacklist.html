@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLACKLIST - MCHLERN LISENSI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>MCHLERN LISENSI STUDIO</h1>
+    </header>
+    <nav>
+        <a href="index.html">TAMBAH</a>
+        <a href="list.html">TER-ACC</a>
+        <a href="scan.html">LOG PENCURI</a>
+        <a href="blacklist.html" class="active">BLACKLIST</a>
+    </nav>
+
+    <div class="container">
+        <h2>ID YANG DIBLACKLIST</h2>
+        <div id="blacklistList"></div>
+    </div>
+
+    <script>
+        async function loadBlacklist() {
+            const list = document.getElementById('blacklistList');
+            try {
+                const response = await fetch('/api/blacklist');
+                const places = await response.json();
+                list.innerHTML = '';
+                
+                if (places.length === 0) {
+                    list.innerHTML = '<p>> KOSONG.</p>';
+                    return;
+                }
+
+                places.forEach(id => {
+                    const div = document.createElement('div');
+                    div.className = 'list-item';
+                    div.innerHTML = `
+                        <span>Banned ID: <strong>${id}</strong></span>
+                        <button onclick="removeBlacklist('${id}')">HAPUS BLACKLIST</button>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (err) {
+                list.innerHTML = '<p>> ERROR MEMUAT DATA.</p>';
+            }
+        }
+
+        async function removeBlacklist(id) {
+            if (!confirm(`Hapus ID ${id} dari Blacklist?`)) return;
+            try {
+                await fetch(`/api/blacklist/${id}`, { method: 'DELETE' });
+                loadBlacklist();
+            } catch (err) { alert('> GAGAL MENGHAPUS.'); }
+        }
+
+        loadBlacklist();
+    </script>
+</body>
+</html>
