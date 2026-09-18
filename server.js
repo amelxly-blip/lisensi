@@ -14,6 +14,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public')); // Load frontend dari folder public
 
 // Inisialisasi database JSON sederhana
+const dbDir = path.dirname(DB_FILE);
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+}
+
 if (!fs.existsSync(DB_FILE)) {
     fs.writeFileSync(DB_FILE, JSON.stringify({ places: [] }));
 }
